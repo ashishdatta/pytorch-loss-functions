@@ -39,8 +39,20 @@ class DiceBCELoss(nn.Module):
 
         return dice_bce
 
-class IoULoss():
-    pass
+class IoULoss(nn.Module):
+    def __init__(self, weight=None, size_average=True):
+        super(IoULoss, self).__init__()
+
+    def forward(self, y_pred, y_true, smooth=1):
+        y_pred = F.sigmoid(y_pred)
+
+        y_pred = y_pred.view(-1)
+        y_true = y_true.view(-1)
+
+        intersection = (y_pred * y_true).sum()
+        union = (y_pred + y_true).sum() - intersection
+        IoU = (intersection + smooth) / (union + smooth)
+        return 1 - IoU
 
 class TverskyLoss():
     pass
