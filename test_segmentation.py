@@ -6,7 +6,7 @@ import segmentation_models_pytorch as smp
 
 from pprint import pprint
 from torch.utils.data import DataLoader
-from pytorch_loss_functions import DiceLoss
+from pytorch_loss_functions import DiceLoss, DiceBCELoss
 
 
 def train(model, device, train_loader, optimizer, epoch):
@@ -18,7 +18,7 @@ def train(model, device, train_loader, optimizer, epoch):
         data = data.float()
         optimizer.zero_grad()
         output = model(data)
-        loss_fn = DiceLoss() #smp.losses.DiceLoss(smp.losses.BINARY_MODE, from_logits=True)
+        loss_fn = DiceBCELoss() #smp.losses.DiceLoss(smp.losses.BINARY_MODE, from_logits=True)
         loss = loss_fn(output, target)
         loss.backward()
         optimizer.step()

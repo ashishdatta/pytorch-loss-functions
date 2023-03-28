@@ -22,11 +22,11 @@ class DiceLoss(nn.Module):
         dice = (2. * intersection + smooth) / (y_pred.sum() + y_true.sum() + smooth)
         return 1 - dice
 
-class DiceBCELoss():
+class DiceBCELoss(nn.Module):
     def __init__(self, weight=None, size_average=True):
         super(DiceBCELoss, self).__init__()
 
-    def forward(self, y_pred, y_true, smooth):
+    def forward(self, y_pred, y_true, smooth=1):
 
         y_pred = F.sigmoid(y_pred)
 
