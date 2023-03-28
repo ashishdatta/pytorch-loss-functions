@@ -67,14 +67,30 @@ class IoULoss(nn.Module):
         IoU = (intersection + smooth) / (union + smooth)
         return 1 - IoU
 
-class TverskyLoss():
+# Note when alpha and beta = 0.5 this is the same as Dice Loss
+class TverskyLoss(nn.Module):
+    def __init__(self, weights=None, size_average=True):
+        super(TverskyLoss, self).__init__()
+
+    def forward(self, y_pred, y_true, smooth=1, alpha=0.5, beta=0.5):
+        y_pred = F.sigmoid(y_pred)
+
+        y_pred = y_pred.view(-1)
+        y_true = y_true.view(-1)
+
+        TP = (y_pred * y_true).sum()
+        FP = ((1-y_true) * y_pred).sum()
+        FN = (y_true * (1 - y_pred)).sum()
+
+        tversky = (TP + smooth) / (TP + alpha * FP + beta * FN + smooth)
+
+        return 1 - tversky
+
+class FocalTverskyLoss(nn.Module):
     pass
 
-class FocalTverskyLoss():
+class LovaszHingeLoss(nn.Module):
     pass
 
-class LovaszHingeLoss():
-    pass
-
-class ComboLoss():
+class ComboLoss(nn.Module):
     pass
