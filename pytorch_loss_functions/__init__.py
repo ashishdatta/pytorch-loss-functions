@@ -5,8 +5,21 @@ import torch.nn.functional as F
 
 
 
-class FocalLoss():
-    pass
+class FocalLoss(nn.Module):
+    def __init__(self, weight=None, size_average=True):
+        super(FocalLoss, self).__init__()
+
+    def forward(self, y_pred, y_true, alpha=0.8, gamma=2, smooth=1):
+        y_pred = F.sigmoid(y_pred)
+        y_pred = y_pred.view(-1)
+        y_true = y_true.view(-1)
+
+        logpt = F.binary_cross_entropy(y_pred, y_true, reduction='mean')
+        pt = torch.exp(-logpt)
+        focal_term = (1.0 - pt).pow(gamma)
+        focal_loss = alpha * focal_term * logpt
+        
+        return  focal_loss
 
 class DiceLoss(nn.Module):
     def __init__(self, weight=None, size_average=True):

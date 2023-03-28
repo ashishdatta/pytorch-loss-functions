@@ -9,7 +9,7 @@ import segmentation_models_pytorch as smp
 
 from pprint import pprint
 from torch.utils.data import DataLoader
-from pytorch_loss_functions import DiceLoss, DiceBCELoss, IoULoss
+from pytorch_loss_functions import DiceLoss, DiceBCELoss, IoULoss, FocalLoss
 
 def train(model, device, train_loader, optimizer, epoch, loss):
     model.train()
@@ -26,6 +26,8 @@ def train(model, device, train_loader, optimizer, epoch, loss):
             loss_fn = DiceBCELoss()
         elif loss == "IoU":
             loss_fn = IoULoss()
+        elif loss == "focal":
+            loss_fn = FocalLoss()
         loss = loss_fn(output, target)
         loss.backward()
         optimizer.step()
@@ -73,3 +75,5 @@ class TestSegmentationLosses():
         dry_run("dicebce")
     def test_iou_loss(self):
         dry_run("IoU")
+    def test_focal_loss(self):
+        dry_run("focal")
